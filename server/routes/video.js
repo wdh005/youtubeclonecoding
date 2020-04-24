@@ -47,6 +47,17 @@ router.post('/uploadVideo', (req, res) => {
     })
 });
 
+router.get('/getVideos', (req, res) => {
+    //비디오를 가져와 클라이언트에 보낸다.
+    Video.find()
+    .populate('writer')
+    .exec((err, videos) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({ success: true, videos})
+    })
+    
+});
+
 router.post('/thumbnail', (req, res) => {
 
     let filePath = "";
