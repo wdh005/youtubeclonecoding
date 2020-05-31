@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react'
 import Axios from 'axios'
 
+
 function Subscribe(props) {
 
     const [SubscribeNumber, setSubscribeNumber] = useState(0)
@@ -30,6 +31,41 @@ function Subscribe(props) {
     })
     }, [])
 
+    const onSubscribe = () => {
+
+        let subscribedVariable = {
+
+            userTo: props.userTo,
+            userFrom: props.userFrom
+        }
+
+
+        if(Subscribed) {
+            //이미 구독중일 때
+
+            Axios.post('/api/subscribe/unSubscribe', subscribedVariable)
+                .then(response => {
+                    if(response.data.success) {
+                        setSubscribeNumber(SubscribeNumber - 1)
+                        setSubscribed(!Subscribed)
+                    }else {
+                        alert('구독 취소 실패')
+                    }
+                })
+        }else {
+            //아직 구독 중 아닐 때
+            Axios.post('/api/subscribe/subscribe', subscribedVariable)
+                .then(response => {
+                    if(response.data.success) {
+                        setSubscribeNumber(SubscribeNumber + 1)
+                        setSubscribed(!Subscribed)
+                    }else {
+                        alert('구독 실패')
+                    }
+                })
+        }
+    }
+
     return (
         <div>
             <button
@@ -39,7 +75,7 @@ function Subscribe(props) {
                     padding: '10px 16px', fontWeight: '500', 
                     fontSize: '1rem', textTransform: 'uppercase'
                  }}
-                 onClick
+                 onClick={onSubscribe}
             >
                 {SubscribeNumber} {Subscribed ? 'Subscribed' : 'Subscribe'}
             </button>
